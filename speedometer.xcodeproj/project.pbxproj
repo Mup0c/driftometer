@@ -13,9 +13,12 @@
 		841E8572208DAEA10078B10D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841E8570208DAEA10078B10D /* LaunchScreen.storyboard */; };
 		841E8579208DC0C20078B10D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E8569208DAE9F0078B10D /* ViewController.swift */; };
 		84F7708B208DDE4500EE9774 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F7708A208DDE4500EE9774 /* CoreLocation.framework */; };
+		CFB95EA60F7F107326C05F7F /* Pods_speedometer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA4FCB2EDBB6AE3A59C0D7B2 /* Pods_speedometer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		35DE2D4E6F62FA99EE55298E /* Pods-speedometer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-speedometer.release.xcconfig"; path = "Pods/Target Support Files/Pods-speedometer/Pods-speedometer.release.xcconfig"; sourceTree = "<group>"; };
+		45CE62A8505CB1C5EA618D7A /* Pods-speedometer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-speedometer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-speedometer/Pods-speedometer.debug.xcconfig"; sourceTree = "<group>"; };
 		841E8564208DAE9F0078B10D /* speedometer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = speedometer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		841E8567208DAE9F0078B10D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		841E8569208DAE9F0078B10D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -24,6 +27,7 @@
 		841E8571208DAEA10078B10D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		841E8573208DAEA10078B10D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		84F7708A208DDE4500EE9774 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DA4FCB2EDBB6AE3A59C0D7B2 /* Pods_speedometer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_speedometer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,18 +36,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				84F7708B208DDE4500EE9774 /* CoreLocation.framework in Frameworks */,
+				CFB95EA60F7F107326C05F7F /* Pods_speedometer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6C93E7FD2CE82E9372028531 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				45CE62A8505CB1C5EA618D7A /* Pods-speedometer.debug.xcconfig */,
+				35DE2D4E6F62FA99EE55298E /* Pods-speedometer.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		841E855B208DAE9F0078B10D = {
 			isa = PBXGroup;
 			children = (
 				841E8566208DAE9F0078B10D /* speedometer */,
 				841E8565208DAE9F0078B10D /* Products */,
 				84F77089208DDE4400EE9774 /* Frameworks */,
+				6C93E7FD2CE82E9372028531 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				84F7708A208DDE4500EE9774 /* CoreLocation.framework */,
+				DA4FCB2EDBB6AE3A59C0D7B2 /* Pods_speedometer.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -83,9 +99,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 841E8576208DAEA10078B10D /* Build configuration list for PBXNativeTarget "speedometer" */;
 			buildPhases = (
+				7BD40728E290BC11225FCD99 /* [CP] Check Pods Manifest.lock */,
 				841E8560208DAE9F0078B10D /* Sources */,
 				841E8561208DAE9F0078B10D /* Frameworks */,
 				841E8562208DAE9F0078B10D /* Resources */,
+				C20E6813A2878741A362080D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -141,6 +159,47 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7BD40728E290BC11225FCD99 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-speedometer-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C20E6813A2878741A362080D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-speedometer/Pods-speedometer-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/HCKalmanFilter/HCKalmanFilter.framework",
+				"${BUILT_PRODUCTS_DIR}/Surge/Surge.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HCKalmanFilter.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Surge.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-speedometer/Pods-speedometer-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		841E8560208DAE9F0078B10D /* Sources */ = {
@@ -225,7 +284,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -279,7 +338,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -290,12 +349,13 @@
 		};
 		841E8577208DAEA10078B10D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45CE62A8505CB1C5EA618D7A /* Pods-speedometer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RKH975FRS7;
 				INFOPLIST_FILE = speedometer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -309,12 +369,13 @@
 		};
 		841E8578208DAEA10078B10D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35DE2D4E6F62FA99EE55298E /* Pods-speedometer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RKH975FRS7;
 				INFOPLIST_FILE = speedometer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

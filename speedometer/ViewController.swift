@@ -8,11 +8,15 @@
 
 import UIKit
 import CoreLocation
+import HCKalmanFilter
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
     let manager = CLLocationManager()
-    var timer = Timer()
+    //var timer = Timer()
+    var hcKalmanFilter: HCKalmanAlgorithm?
+    var resetKalmanFilter: Bool = false
+
     var latestHead = -1.0
     var curHead = -1.0
     var pastHead = -1.0
@@ -30,10 +34,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var CoursePast: UILabel!
     @IBOutlet weak var angleLabel: UILabel!
     
+    
+    
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading)
     {
         latestHead = newHeading.trueHeading
-        //angleLabel.text = String(format: "%.2f",latestHead) + " upd"
+        print(String(format: "%.2f",latestHead) + " upd")
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
@@ -41,6 +47,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         //var date = String(format: "%.2f",locations[0].timestamp.description)
         //let range = date.startIndex..<date.index(date.startIndex, offsetBy: 14)
         //date.removeSubrange(range)
+        let myLocation: CLLocation = locations.first!
+        
+        if hcKalmanFilter == nil {
+            self.hcKalmanFilter = HCKalmanAlgorithm(initialLocation: myLocation)
+        }
+        else {
+            if let hcKalmanFilter = self.hcKalmanFilter {
+                if resetKalmanFilter == true {
+                    hcKalmanFilter.resetKalman(newStartLocation: myLocation)
+                    resetKalmanFilter = false
+                }
+                else {
+                    let kalmanLocation = hcKalmanFilter.processState(currentLocation: myLocation)
+                    print(kalmanLocation.coordinate)
+                }
+            }
+        }
+        
         let data = String(format: "%.2f", max(locations[0].speed * 3.6, 0)) + " km/h"
         speedLabel.text = data
         pastHead = curHead
