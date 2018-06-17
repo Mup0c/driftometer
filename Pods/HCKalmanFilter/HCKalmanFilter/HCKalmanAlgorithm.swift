@@ -25,8 +25,8 @@ open class HCKalmanAlgorithm
     /// **Sigma** value is  value for Acceleration Noise Magnitude Matrix (Qt).
     /// Recommended value for **sigma** is 0.0625, this value is optimal for GPS problem,
     /// it was concluded by researches.
-    private let sigma = 0.0625
-    
+    //private let sigma = 0.0625
+    private let sigma = 0.625
     
     /// Value for Sensor Noise Covariance Matrix
     /// ========================================

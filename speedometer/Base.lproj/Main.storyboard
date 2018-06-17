@@ -39,20 +39,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eeg-jU-axl" userLabel="HeadingPastLabel">
-                                <rect key="frame" x="16" y="414" width="173" height="96"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="26"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E7x-Hh-hOT" userLabel="CoursePastLable">
-                                <rect key="frame" x="197" y="414" width="162" height="96"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="26"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kea-Hx-yaR" userLabel="Angle Lable">
                                 <rect key="frame" x="106" y="534" width="162" height="96"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -60,10 +46,10 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1c-QN-GBD" userLabel="HeadingMidLabel">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="max speed 100km/h" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1c-QN-GBD" userLabel="MaxSpeedLabel">
                                 <rect key="frame" x="16" y="206" width="173" height="96"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="26"/>
+                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="30"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -74,6 +60,24 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="TXZ-PQ-Gpg">
+                                <rect key="frame" x="49" y="435" width="107" height="63"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Start Recording"/>
+                                <connections>
+                                    <action selector="recordButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Kxj-8j-2cZ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="W0N-Tt-eNN">
+                                <rect key="frame" x="225" y="435" width="107" height="63"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Start Measure"/>
+                                <connections>
+                                    <action selector="measureButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dkh-5P-GWd"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -81,11 +85,11 @@
                     <connections>
                         <outlet property="CourseCur" destination="UfM-8A-YcW" id="hXX-PR-sJ5"/>
                         <outlet property="CourseMid" destination="qvu-Mj-EfY" id="Ybc-ya-l90"/>
-                        <outlet property="CoursePast" destination="E7x-Hh-hOT" id="bAm-Lp-ADj"/>
                         <outlet property="HeadCur" destination="XIr-Fc-5UD" id="U6K-mq-6zk"/>
-                        <outlet property="HeadMid" destination="q1c-QN-GBD" id="mEz-DA-wfo"/>
-                        <outlet property="HeadPast" destination="Eeg-jU-axl" id="jEx-jZ-PqK"/>
                         <outlet property="angleLabel" destination="Kea-Hx-yaR" id="73W-Vb-GDD"/>
+                        <outlet property="maxSpeedLabel" destination="q1c-QN-GBD" id="Z1T-lo-9d1"/>
+                        <outlet property="measure" destination="W0N-Tt-eNN" id="P3P-0V-5DP"/>
+                        <outlet property="record" destination="TXZ-PQ-Gpg" id="ScZ-vZ-7kA"/>
                         <outlet property="speedLabel" destination="dnZ-P8-m9D" id="Z3h-I2-Dmy"/>
                     </connections>
                 </viewController>
