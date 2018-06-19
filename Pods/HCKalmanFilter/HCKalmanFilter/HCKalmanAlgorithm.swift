@@ -25,8 +25,7 @@ open class HCKalmanAlgorithm
     /// **Sigma** value is  value for Acceleration Noise Magnitude Matrix (Qt).
     /// Recommended value for **sigma** is 0.0625, this value is optimal for GPS problem,
     /// it was concluded by researches.
-    //private let sigma = 0.0625
-    private let sigma = 0.625
+    private let sigma = 0.0625
     
     /// Value for Sensor Noise Covariance Matrix
     /// ========================================
@@ -159,6 +158,27 @@ open class HCKalmanAlgorithm
         self.initKalman(initialLocation: newStartLocation)
     }
     
+    open func returnPredicted() -> CLLocation
+    {
+        let newMeasureTimeSeconds = NSDate().timeIntervalSince1970
+        let lastMeasureTimeSeconds = previousMeasureTime.timeIntervalSince1970
+        
+        // Calculate timeInterval between last and current measure
+        let timeInterval = newMeasureTimeSeconds - lastMeasureTimeSeconds
+        let At = HCMatrixObject(rows: stateMDimension, columns: stateMDimension)
+
+        At.setMatrix(matrix: [[1,Double(timeInterval),0,0,0,0],[0,1,0,0,0,0],[0,0,1,Double(timeInterval),0,0],[0,0,0,1,0,0],[0,0,0,0,1,Double(timeInterval)],[0,0,0,0,0,1]])
+        let xk = zt! + (xk1 - (A*xk1)!)!
+
+        let lat = xk!.matrix[0,0]
+        let lon = xk!.matrix[2,0]
+        let altitude = xk!.matrix[4,0]
+        
+        let kalmanCLLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: lat,longitude: lon), altitude: altitude, horizontalAccuracy: self.previousLocation.horizontalAccuracy, verticalAccuracy: self.previousLocation.verticalAccuracy, timestamp: NSDate() as Date)
+        
+        return kalmanCLLocation
+    }
+    
     /// Process Current Location
     /// ========================
     ///  This function is a main. **processState** will be processed current location of user by Kalman Filter
@@ -167,7 +187,6 @@ open class HCKalmanAlgorithm
     ///   - currentLocation: this is CLLocation object which represent current location returned by GPS.
     ///                      **currentLocation** is real position of user, and it will be processed by Kalman Filter.
     /// - returns: CLLocation object with corrected latitude, longitude and altitude values
-    
     open func processState(currentLocation: CLLocation) -> CLLocation
     {
         // Set current timestamp
@@ -194,19 +213,25 @@ open class HCKalmanAlgorithm
         // Calculate velocity components
         // This is value of velocity between previous and current location.
         // Distance traveled from the previous to the current location divided by timeInterval between two measurement.
-        let velocityXComponent = (previousLocation.coordinate.latitude - currentLocation.coordinate.latitude)/timeInterval
-        let velocityYComponent = (previousLocation.coordinate.longitude - currentLocation.coordinate.longitude)/timeInterval
-        let velocityZComponent = (previousLocation.altitude - currentLocation.altitude)/timeInterval
-        
-        // Set Measured State Vector; current latitude, longitude, altitude and latitude velocity, longitude velocity and altitude velocity
-        zt.setMatrix(matrix: [[currentLocation.coordinate.latitude],[velocityXComponent],[currentLocation.coordinate.longitude],[velocityYComponent],[currentLocation.altitude],[velocityZComponent]])
-        
-        // Set previous Location and Measure Time for next step of processState function.
-        previousLocation = currentLocation
-        previousMeasureTime = newMeasureTime
-        
-        // Return value of kalmanFilter
-        return self.kalmanFilter()
+        if !(currentLocation.coordinate.latitude == previousLocation.coordinate.latitude){
+            let velocityXComponent = (previousLocation.coordinate.latitude - currentLocation.coordinate.latitude)/timeInterval
+            let velocityYComponent = (previousLocation.coordinate.longitude - currentLocation.coordinate.longitude)/timeInterval
+            let velocityZComponent = (previousLocation.altitude - currentLocation.altitude)/timeInterval
+            // Set Measured State Vector; current latitude, longitude, altitude and latitude velocity, longitude velocity and altitude velocity
+            zt.setMatrix(matrix: [[currentLocation.coordinate.latitude],[velocityXComponent],[currentLocation.coordinate.longitude],[velocityYComponent],[currentLocation.altitude],[velocityZComponent]])
+            // Set previous Location and Measure Time for next step of processState function.
+            previousLocation = currentLocation
+            previousMeasureTime = newMeasureTime
+            // Return value of kalmanFilter
+            print("---------------------UPDATED GPS-------------------------")
+            return self.kalmanFilter()
+
+
+        }
+        //return self.kalmanFilter()
+        //return currentLocation
+        return self.returnPredicted()
+
     }
     
     /// Kalman Filter Function
@@ -225,21 +250,24 @@ open class HCKalmanAlgorithm
     {
         let xk = A*xk1
         let Pk = ((A*Pk1)!*A.transpose()!)! + Qt
+        //let delta = xk! - xk1
+        
         
         let tmp = Pk!+R
         
         // Kalman gain (Kt)
         let Kt = Pk!*(tmp?.inverseMatrix())!
         
-        let xt = xk! + (Kt! * (zt - xk!)!)!
+        let xt = zt //xk! + (Kt! * (zt - xk!)!)!
         let Pt = (HCMatrixObject.getIdentityMatrix(dim: stateMDimension) - Kt!)! * Pk!
         
         self.xk1 = xt!
         self.Pk1 = Pt!
         
-        let lat = xk1.matrix[0,0]
-        let lon = xk1.matrix[2,0]
-        let altitude = xk1.matrix[4,0]
+        let xk2 = zt
+        let lat = xk2!.matrix[0,0]
+        let lon = xk2!.matrix[2,0]
+        let altitude = xk2!.matrix[4,0]
         
         let kalmanCLLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: lat,longitude: lon), altitude: altitude, horizontalAccuracy: self.previousLocation.horizontalAccuracy, verticalAccuracy: self.previousLocation.verticalAccuracy, timestamp: previousMeasureTime)
         

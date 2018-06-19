@@ -26,7 +26,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var isMeasuring = false
     var hcKalmanFilter: HCKalmanAlgorithm?
     var resetKalmanFilter: Bool = false
-    
+
     var route: [locationAndHeading] = []
     var latestGPSLocation: CLLocation?
     var latestKFLocation: CLLocation?
@@ -93,9 +93,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     @objc func recording()
     {
+       // print(hcKalmanFilter!.returnPredicted().coordinate.latitude,",", hcKalmanFilter!.returnPredicted().coordinate.longitude, ",PRD,", "Cyan")
         if hcKalmanFilter == nil {
             self.hcKalmanFilter = HCKalmanAlgorithm(initialLocation: latestGPSLocation!)
-            hcKalmanFilter!.rValue = 2
+            hcKalmanFilter!.rValue = 1
         } else {
             if let hcKalmanFilter = self.hcKalmanFilter {
                 if resetKalmanFilter == true {
@@ -108,15 +109,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                     latestKFLocation = hcKalmanFilter.processState(currentLocation: GPSforKF)
                     
                     print("record")
-
+                    
                     //route.append(locationAndHeading(location: latestKFLocation!, heading: latestHead!))
                     //print(String(latestHead!.trueHeading))
-                    maxDist = max(maxDist, latestKFLocation!.distance(from: latestGPSLocation!))
-                    print(maxDist)
+                    //maxDist = max(maxDist, latestKFLocation!.distance(from: latestGPSLocation!))
+                    //print(maxDist)
+                    print(latestKFLocation!.distance(from: latestGPSLocation!))
                     print(latestKFLocation!.coordinate.latitude,",", latestKFLocation!.coordinate.longitude, ",KF,", "Blue")
                     print(latestGPSLocation!.coordinate.latitude,",", latestGPSLocation!.coordinate.longitude, ",GPS,", "Red")
-                    //print(latestGPSLocation!.coordinate)
-
+                    
                     //print(route.last!)
                 }
             }
@@ -147,7 +148,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         maxSpeedLabel.text = "Max speed: " + String(format: "%.2f", maxSpeed) + " km/h"
         
         
-        
+       
         
 
         
