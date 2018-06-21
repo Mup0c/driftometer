@@ -94,6 +94,8 @@ open class HCKalmanAlgorithm
     /// Previous State Location
     private var previousLocation = CLLocation()
     
+    private var first = true
+    
     
     //MARK: - HCKalmanAlgorithm initialization
     
@@ -213,7 +215,7 @@ open class HCKalmanAlgorithm
         // Calculate velocity components
         // This is value of velocity between previous and current location.
         // Distance traveled from the previous to the current location divided by timeInterval between two measurement.
-        if !(currentLocation.coordinate.latitude == previousLocation.coordinate.latitude){
+        if !(currentLocation.coordinate.latitude == previousLocation.coordinate.latitude && !first){
             let velocityXComponent = (previousLocation.coordinate.latitude - currentLocation.coordinate.latitude)/timeInterval
             let velocityYComponent = (previousLocation.coordinate.longitude - currentLocation.coordinate.longitude)/timeInterval
             let velocityZComponent = (previousLocation.altitude - currentLocation.altitude)/timeInterval
@@ -224,6 +226,7 @@ open class HCKalmanAlgorithm
             previousMeasureTime = newMeasureTime
             // Return value of kalmanFilter
             print("---------------------UPDATED GPS-------------------------")
+            first = false
             return self.kalmanFilter()
 
 

@@ -17,7 +17,7 @@ struct locationAndHeading {
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
-    let clock = 0.2
+    let clock = 0.14
     
     let manager = CLLocationManager()
     var recordClock = Timer()
@@ -93,7 +93,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     @objc func recording()
     {
-       // print(hcKalmanFilter!.returnPredicted().coordinate.latitude,",", hcKalmanFilter!.returnPredicted().coordinate.longitude, ",PRD,", "Cyan")
         if hcKalmanFilter == nil {
             self.hcKalmanFilter = HCKalmanAlgorithm(initialLocation: latestGPSLocation!)
             hcKalmanFilter!.rValue = 1
