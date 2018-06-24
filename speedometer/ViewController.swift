@@ -17,7 +17,7 @@ struct locationAndHeading {
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
-    let clock = 0.14
+    let clock = 0.016
     
     let manager = CLLocationManager()
     var recordClock = Timer()
@@ -93,6 +93,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             print("Stopped measuring")
             measureClock.invalidate()
             record.isEnabled = true
+            angleLabel.text = ""
         }
     }
     
@@ -157,7 +158,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                         angleLabel.text = "Deviation ≥ 10m"
                     } else {
                         var angle = abs(curLocNHead!.heading.trueHeading - latestHead!.trueHeading)
-                        angle = angle > 180.0 ? angle - 180: angle
+                        angle = angle > 180.0 ? abs(angle - 360): angle
                         print("-----Angle: ", angle)
                         if angle < 2.5 {
                             angle = 0.0
@@ -165,18 +166,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                             angleSum += angle
                             angleCount += 1
                         }
-                        let text = String(format: "%.1f", angleSum / Double(angleCount)) + "°"
-                        AvgAngleLabel.text = text
-                        angleLabel.text = String(format: "%.1f", angle > 180.0 ? angle - 180: angle) + "° DORIFTO"
+                        maxAngle = max(angle, maxAngle)
+                        var text = "Max angle: " + String(format: "%.0f", maxAngle) + "°"
+                        maxAngleLabel.text = text
+                        if angleCount > 0 {
+                            text = "Avg angle: " + String(format: "%.1f", angleSum / Double(angleCount)) + "°"
+                            AvgAngleLabel.text = text
+                        }
+                        angleLabel.text = String(format: "%.0f", angle) + "°   DORIFTO"
+                        
+                        print("Deviation: ", latestKFLocation!.distance(from: curLocNHead!.location))
+                        print("curLocNHead: ", curLocNHead!)
+
                     }
                     //print(String(latestHead!.trueHeading))
                     //maxDist = max(maxDist, latestKFLocation!.distance(from: latestGPSLocation!))
                     //print(maxDist)
-                    print(latestKFLocation!.distance(from: curLocNHead!.location))
                     print(latestKFLocation!.coordinate.latitude,",", latestKFLocation!.coordinate.longitude, ",KF,", "Blue")
                     print(latestGPSLocation!.coordinate.latitude,",", latestGPSLocation!.coordinate.longitude, ",GPS,", "Red")
                     
-                    print("curLocNHead: ", curLocNHead!)
                 }
             }
         }
@@ -205,7 +213,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         maxSpeed = max(locations.first!.speed * 3.6, maxSpeed)
         var data = String(format: "%.2f", max(locations.first!.speed * 3.6, 0)) + " km/h"
         speedLabel.text = data
-        data = String(format: "%.2f", (speedSum / Double(speedCount)) * 3.6) + " km/h"
+        data = "Avg speed: " + String(format: "%.2f", (speedSum / Double(speedCount)) * 3.6) + " km/h"
         AvgSpeedLabel.text = data
         maxSpeedLabel.text = "Max speed: " + String(format: "%.2f", maxSpeed) + " km/h"
     }
