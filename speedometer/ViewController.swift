@@ -32,9 +32,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var latestKFLocation: CLLocation?
     var latestHead: CLHeading?
     
-    var maxDist = 0.0
+    //var maxDist = 0.0
     
     var maxSpeed = 0.0
+    var speedSum = 0.0
+    var speedCount = 0
+    var maxAngle = 0.0
+    var angleSum = 0.0
+    var angleCount = 0
     
     
     /* var curHead = -1.0
@@ -46,9 +51,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     //MARK: Label
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var maxSpeedLabel: UILabel!
-    @IBOutlet weak var CourseMid: UILabel!
-    @IBOutlet weak var HeadCur: UILabel!
-    @IBOutlet weak var CourseCur: UILabel!
+    @IBOutlet weak var maxAngleLabel: UILabel!
+    @IBOutlet weak var AvgAngleLabel: UILabel!
+    @IBOutlet weak var AvgSpeedLabel: UILabel!
     @IBOutlet weak var angleLabel: UILabel!
     
     @IBOutlet weak var record: UIButton!
@@ -57,7 +62,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func recordButtonClick(_ sender: UIButton) {
         if !isRecording {
-            maxSpeed = 0.0
+            reset_meters()
             resetKalmanFilter = true
             record.setTitle("Stop Recording", for: .normal)
             isRecording = true
@@ -75,7 +80,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
     @IBAction func measureButtonClick(_ sender: UIButton) {
         if !isMeasuring {
-            maxSpeed = 0.0
+            reset_meters()
             resetKalmanFilter = true
             measure.setTitle("Stop Measuring", for: .normal)
             isMeasuring = true
@@ -109,15 +114,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                     
                     print("record")
                     
-                    //route.append(locationAndHeading(location: latestKFLocation!, heading: latestHead!))
-                    //print(String(latestHead!.trueHeading))
+                    route.append(locationAndHeading(location: latestKFLocation!, heading: latestHead!))
                     //maxDist = max(maxDist, latestKFLocation!.distance(from: latestGPSLocation!))
                     //print(maxDist)
                     print(latestKFLocation!.distance(from: latestGPSLocation!))
-                    print(latestKFLocation!.coordinate.latitude,",", latestKFLocation!.coordinate.longitude, ",KF,", "Blue")
-                    print(latestGPSLocation!.coordinate.latitude,",", latestGPSLocation!.coordinate.longitude, ",GPS,", "Red")
+                    print(latestKFLocation!.coordinate.latitude,",", latestKFLocation!.coordinate.longitude,", "+String(latestHead!.trueHeading)+" KF,", "Blue")
+                    print(latestGPSLocation!.coordinate.latitude,",", latestGPSLocation!.coordinate.longitude,", "+String(latestHead!.trueHeading)+" GPS,", "Red")
                     
-                    //print(route.last!)
+                    print(route.last!)
                 }
             }
         }
@@ -125,7 +129,67 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     @objc func measuring()
     {
-        print("measure")
+        if hcKalmanFilter == nil {
+            self.hcKalmanFilter = HCKalmanAlgorithm(initialLocation: latestGPSLocation!)
+            hcKalmanFilter!.rValue = 1
+        } else {
+            if let hcKalmanFilter = self.hcKalmanFilter {
+                if resetKalmanFilter == true {
+                    hcKalmanFilter.resetKalman(newStartLocation: latestGPSLocation!)
+                    resetKalmanFilter = false
+                    print("Resetted KF")
+                }
+                else {
+                    let GPSforKF = CLLocation(coordinate: latestGPSLocation!.coordinate, altitude: latestGPSLocation!.altitude, horizontalAccuracy: latestGPSLocation!.horizontalAccuracy, verticalAccuracy: latestGPSLocation!.verticalAccuracy, timestamp: NSDate() as Date)
+                    latestKFLocation = hcKalmanFilter.processState(currentLocation: GPSforKF)
+                    
+                    print("measure")
+                    var min_dist = 10.0
+                    var curLocNHead: locationAndHeading?
+                    for locAndHead in route {
+                        let dist = latestKFLocation!.distance(from: locAndHead.location)
+                        if dist < min_dist {
+                            min_dist = dist
+                            curLocNHead = locAndHead
+                        }
+                    }
+                    if (min_dist == 10.0) {
+                        angleLabel.text = "Deviation ≥ 10m"
+                    } else {
+                        var angle = abs(curLocNHead!.heading.trueHeading - latestHead!.trueHeading)
+                        angle = angle > 180.0 ? angle - 180: angle
+                        print("-----Angle: ", angle)
+                        if angle < 2.5 {
+                            angle = 0.0
+                        } else {
+                            angleSum += angle
+                            angleCount += 1
+                        }
+                        let text = String(format: "%.1f", angleSum / Double(angleCount)) + "°"
+                        AvgAngleLabel.text = text
+                        angleLabel.text = String(format: "%.1f", angle > 180.0 ? angle - 180: angle) + "° DORIFTO"
+                    }
+                    //print(String(latestHead!.trueHeading))
+                    //maxDist = max(maxDist, latestKFLocation!.distance(from: latestGPSLocation!))
+                    //print(maxDist)
+                    print(latestKFLocation!.distance(from: curLocNHead!.location))
+                    print(latestKFLocation!.coordinate.latitude,",", latestKFLocation!.coordinate.longitude, ",KF,", "Blue")
+                    print(latestGPSLocation!.coordinate.latitude,",", latestGPSLocation!.coordinate.longitude, ",GPS,", "Red")
+                    
+                    print("curLocNHead: ", curLocNHead!)
+                }
+            }
+        }
+    }
+    
+    func reset_meters()
+    {
+        maxSpeed = 0.0
+        speedSum = 0.0
+        speedCount = 0
+        maxAngle = 0.0
+        angleSum = 0.0
+        angleCount = 0
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading)
@@ -135,45 +199,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     {
-        //var date = String(format: "%.2f",locations[0].timestamp.description)
-        //let range = date.startIndex..<date.index(date.startIndex, offsetBy: 14)
-        //date.removeSubrange(range)
-
-
         latestGPSLocation = locations.first!
+        speedSum += max(locations.first!.speed, 0)
+        speedCount += 1
         maxSpeed = max(locations.first!.speed * 3.6, maxSpeed)
-        let data = String(format: "%.2f", max(locations.first!.speed * 3.6, 0)) + " km/h"
+        var data = String(format: "%.2f", max(locations.first!.speed * 3.6, 0)) + " km/h"
         speedLabel.text = data
+        data = String(format: "%.2f", (speedSum / Double(speedCount)) * 3.6) + " km/h"
+        AvgSpeedLabel.text = data
         maxSpeedLabel.text = "Max speed: " + String(format: "%.2f", maxSpeed) + " km/h"
-        
-        
-       
-        
-
-        
-        
-      /*  pastHead = curHead
-        pastCourse = curCourse
-        curHead = notLatestHead
-        notLatestHead = latestHead
-        curCourse = locations[0].course
-        if (pastCourse < 0) || (pastCourse < 0) || (curHead < 0) || (curCourse < 0){
-            HeadMid.text = "  Invalid"
-            CourseMid.text = "Data  "
-        }
-        else
-        {
-            var corrector = (abs(pastCourse - curCourse) > 180) ? 180.0: 0.0
-            let courseMid = ((pastCourse + curCourse) / 2 + corrector).truncatingRemainder(dividingBy: 360)
-            corrector = (abs(pastHead - curHead) > 180) ? 180.0: 0.0
-            let headMid = ((pastHead + curHead) / 2 + corrector).truncatingRemainder(dividingBy: 360)
-            HeadMid.text = String(format: "%.2f",headMid) + " mHd"
-            CourseMid.text = String(format: "%.2f",courseMid) + "mCrs"
-            let angle = abs(headMid - courseMid)
-            angleLabel.text = String(format: "%.1f", angle > 180.0 ? angle - 360: angle) + " DORIFTO"
-        }
-        HeadCur.text = String(format: "%.2f", curHead) + " cHd"
-        CourseCur.text = String(format: "%.2f", curCourse) + " cCrs" */
     }
  
     override func viewDidLoad()
